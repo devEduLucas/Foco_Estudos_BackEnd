@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: Foco-Nos-Estudos-Spring-boot
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/focoestudos
+    username: root
+    password: 1234
