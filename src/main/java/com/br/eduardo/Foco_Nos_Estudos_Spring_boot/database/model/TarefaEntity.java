@@ -2,11 +2,19 @@ package com.br.eduardo.Foco_Nos_Estudos_Spring_boot.database.model;
 
 import java.time.LocalDate;
 
+import com.br.eduardo.Foco_Nos_Estudos_Spring_boot.enums.PrioridadeTarefa;
+import com.br.eduardo.Foco_Nos_Estudos_Spring_boot.enums.StatusTarefa;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,26 +28,28 @@ import lombok.Setter;
 @Entity
 @Table(name = "tarefas")
 public class TarefaEntity {
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
-    @Column(nullable = false, name = "materia_id")
-    private Long materiaId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn (name = "materia_id", nullable = false)
+    private MateriaEntity materia;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String titulo;
 
-    @Column(nullable = false)
+    @Column(length = 1000)
     private String descricao;
 
     @Column(nullable = false, name = "data_prazo")
     private LocalDate dataPrazo;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Number status;
+    private StatusTarefa status;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String prioridade;
+    private PrioridadeTarefa prioridade;
 }
