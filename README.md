@@ -1,7 +1,7 @@
 # Foco nos Estudos — API (Spring Boot)
 
 API REST para organizar estudos: usuários, matérias e tarefas, com resumo geral e semanal.
-Java 17+, Spring Boot 3.3, Spring Security (JWT), Spring Data JPA, H2 em arquivo.
+Java 21, Spring Boot 3.3, Spring Security (JWT), Spring Data JPA, H2 em arquivo.
 
 ## Executar
 ```bash
