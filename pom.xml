@@ -63,11 +63,18 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Banco embarcado em arquivo: roda localmente sem instalar nada -->
+        <!-- Banco de execução: MySQL (o application.yml do projeto aponta para ele) -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Só para os testes: banco em memória, não precisa de MySQL rodando -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
