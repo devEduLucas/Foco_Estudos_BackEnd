@@ -2,6 +2,8 @@ package com.br.eduardo.Foco_Nos_Estudos_Spring_boot.database.model;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,19 +22,20 @@ import lombok.Setter;
 @Entity
 @Table(name = "usuarios")
 public class UsuarioEntity {
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String nome;
     
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(nullable = false, name = "senha_hash")
+    @Column(nullable = false, name = "senha_hash", updatable = false)
     private String senhaHash;
 
+    @CreationTimestamp 
+    @Column(name = "criado_em", updatable = false, nullable = false)
     private LocalDate criadoEm;
 }
