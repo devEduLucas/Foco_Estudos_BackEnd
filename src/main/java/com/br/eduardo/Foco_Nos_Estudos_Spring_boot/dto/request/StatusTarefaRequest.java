@@ -14,6 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class StatusTarefaRequest {
 
-    @NotNull
+    @NotNull(message = "Informe o status da tarefa.")
     private StatusTarefa status;
 }
