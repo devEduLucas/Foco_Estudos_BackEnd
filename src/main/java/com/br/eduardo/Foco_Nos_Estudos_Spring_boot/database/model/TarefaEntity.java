@@ -1,6 +1,6 @@
 package com.br.eduardo.Foco_Nos_Estudos_Spring_boot.database.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.br.eduardo.Foco_Nos_Estudos_Spring_boot.enums.PrioridadeTarefa;
 import com.br.eduardo.Foco_Nos_Estudos_Spring_boot.enums.StatusTarefa;
@@ -21,19 +21,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter 
-@Setter 
-@AllArgsConstructor 
-@NoArgsConstructor 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tarefas")
 public class TarefaEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn (name = "materia_id", nullable = false)
+    @JoinColumn(name = "materia_id", nullable = false)
     private MateriaEntity materia;
 
     @Column(nullable = false, length = 150)
@@ -43,7 +44,7 @@ public class TarefaEntity {
     private String descricao;
 
     @Column(nullable = false, name = "data_prazo")
-    private LocalDate dataPrazo;
+    private LocalDateTime dataPrazo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -52,4 +53,9 @@ public class TarefaEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PrioridadeTarefa prioridade;
+
+    /** Atrasada: ainda não concluída e com o prazo (data e hora) já vencido. */
+    public boolean estaAtrasada(LocalDateTime agora) {
+        return status != StatusTarefa.CONCLUIDA && dataPrazo.isBefore(agora);
+    }
 }

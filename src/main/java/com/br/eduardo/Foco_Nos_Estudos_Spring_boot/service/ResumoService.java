@@ -3,6 +3,7 @@ package com.br.eduardo.Foco_Nos_Estudos_Spring_boot.service;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
@@ -29,39 +30,35 @@ public class ResumoService {
 
     @Transactional(readOnly = true)
     public ResumoResponse resumo(Long usuarioId) {
-        LocalDate hoje = LocalDate.now(clock);
+        LocalDateTime agora = LocalDateTime.now(clock);
         List<TarefaEntity> tarefas = tarefaRepository.findByMateriaUsuarioIdOrderByDataPrazoAsc(usuarioId);
         return new ResumoResponse(
                 tarefas.size(),
                 contar(tarefas, StatusTarefa.PENDENTE),
                 contar(tarefas, StatusTarefa.EM_ANDAMENTO),
                 contar(tarefas, StatusTarefa.CONCLUIDA),
-                tarefas.stream().filter(t -> atrasada(t, hoje)).count());
+                tarefas.stream().filter(t -> t.estaAtrasada(agora)).count());
     }
 
     /** Semana de segunda a domingo que contém hoje, pelas tarefas com prazo nela. */
     @Transactional(readOnly = true)
     public ResumoSemanalResponse semanal(Long usuarioId) {
-        LocalDate hoje = LocalDate.now(clock);
-        LocalDate inicio = hoje.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDateTime agora = LocalDateTime.now(clock);
+        LocalDate inicio = LocalDate.now(clock).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate fim = inicio.plusDays(6);
+        LocalDateTime de = inicio.atStartOfDay();
+        LocalDateTime ate = fim.plusDays(1).atStartOfDay();
         List<TarefaEntity> daSemana = tarefaRepository.findByMateriaUsuarioIdOrderByDataPrazoAsc(usuarioId).stream()
-                .filter(t -> !t.getDataPrazo().isBefore(inicio) && !t.getDataPrazo().isAfter(fim))
+                .filter(t -> !t.getDataPrazo().isBefore(de) && t.getDataPrazo().isBefore(ate))
                 .toList();
+        long planejadas = daSemana.size();
         long concluidas = contar(daSemana, StatusTarefa.CONCLUIDA);
-        List<TarefaResponse> tarefas = daSemana.stream()
-                .map(t -> new TarefaResponse(t.getId(), t.getMateria().getId(), t.getTitulo(), t.getDescricao(),
-                        t.getDataPrazo(), t.getStatus(), t.getPrioridade(), atrasada(t, hoje)))
-                .toList();
-        return new ResumoSemanalResponse(inicio, fim, daSemana.size(), concluidas, daSemana.size() - concluidas,
+        List<TarefaResponse> tarefas = daSemana.stream().map(t -> TarefaResponse.de(t, agora)).toList();
+        return new ResumoSemanalResponse(inicio, fim, planejadas, planejadas, concluidas, planejadas - concluidas,
                 tarefas);
     }
 
     private long contar(List<TarefaEntity> tarefas, StatusTarefa status) {
         return tarefas.stream().filter(t -> t.getStatus() == status).count();
-    }
-
-    private boolean atrasada(TarefaEntity t, LocalDate hoje) {
-        return t.getStatus() != StatusTarefa.CONCLUIDA && t.getDataPrazo().isBefore(hoje);
     }
 }
