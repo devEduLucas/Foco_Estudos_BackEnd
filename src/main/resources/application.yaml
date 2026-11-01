@@ -1,14 +1,16 @@
 server:
   port: 8080
+  servlet:
+    context-path: /api
 
 spring:
   application:
     name: Foco_Nos_Estudos_Spring_boot
 
   datasource:
-    url: "{DB_URL}"
-    username: "{DB_USERNAME}"
-    password: "{DB_PASSWORD}"
+    url: jdbc:mysql://localhost:3306/focoestudos?allowPublicKeyRetrieval=true&sslMode=DISABLED&serverTimezone=UTC
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
