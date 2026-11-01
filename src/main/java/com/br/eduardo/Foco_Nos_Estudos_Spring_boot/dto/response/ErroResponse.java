@@ -9,12 +9,17 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ErroResponse {
+
     private final int status;
     private final String mensagem;
-    private final List<String> detalhes;
+    private final List<CampoErro> campos;
     private final Instant timestamp;
 
-    public static ErroResponse of(int status, String mensagem, List<String> detalhes) {
-        return new ErroResponse(status, mensagem, detalhes, Instant.now());
+    public static ErroResponse of(int status, String mensagem) {
+        return of(status, mensagem, List.of());
+    }
+
+    public static ErroResponse of(int status, String mensagem, List<CampoErro> campos) {
+        return new ErroResponse(status, mensagem, campos, Instant.now());
     }
 }
