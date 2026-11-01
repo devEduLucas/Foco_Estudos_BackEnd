@@ -24,7 +24,7 @@ public class ResumoController {
         return resumoService.resumo(usuarioId);
     }
 
-    @GetMapping("/semanal")
+    @GetMapping({ "/semanal", "/semana" })
     public ResumoSemanalResponse semanal(@AuthenticationPrincipal Long usuarioId) {
         return resumoService.semanal(usuarioId);
     }

@@ -1,7 +1,9 @@
 package com.br.eduardo.Foco_Nos_Estudos_Spring_boot.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.br.eduardo.Foco_Nos_Estudos_Spring_boot.dto.request.StatusTarefaRequest;
 import com.br.eduardo.Foco_Nos_Estudos_Spring_boot.dto.request.TarefaRequest;
 import com.br.eduardo.Foco_Nos_Estudos_Spring_boot.dto.response.TarefaResponse;
+import com.br.eduardo.Foco_Nos_Estudos_Spring_boot.enums.PrioridadeTarefa;
 import com.br.eduardo.Foco_Nos_Estudos_Spring_boot.enums.StatusTarefa;
 import com.br.eduardo.Foco_Nos_Estudos_Spring_boot.service.TarefaService;
 
@@ -43,8 +46,23 @@ public class TarefaController {
     @GetMapping
     public List<TarefaResponse> listar(@AuthenticationPrincipal Long usuarioId,
             @RequestParam(required = false) Long materiaId,
-            @RequestParam(required = false) StatusTarefa status) {
-        return tarefaService.listar(usuarioId, materiaId, status);
+            @RequestParam(required = false) StatusTarefa status,
+            @RequestParam(required = false) PrioridadeTarefa prioridade,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime de,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime ate,
+            @RequestParam(required = false) Boolean atrasadas) {
+        return tarefaService.listar(usuarioId, materiaId, status, prioridade, de, ate, atrasadas);
+    }
+
+    @GetMapping("/hoje")
+    public List<TarefaResponse> hoje(@AuthenticationPrincipal Long usuarioId) {
+        return tarefaService.listarHoje(usuarioId);
+    }
+
+    @GetMapping("/proximos-prazos")
+    public List<TarefaResponse> proximosPrazos(@AuthenticationPrincipal Long usuarioId,
+            @RequestParam(defaultValue = "7") int dias) {
+        return tarefaService.listarProximosPrazos(usuarioId, dias);
     }
 
     @GetMapping("/{id}")
